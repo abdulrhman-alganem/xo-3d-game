@@ -21,10 +21,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Gradle 9.6
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: '9.6'
+      - name: Install Gradle 9.6
+        shell: bash
+        run: |
+          curl -fsSL https://services.gradle.org/distributions/gradle-9.6-bin.zip -o "$RUNNER_TEMP/gradle.zip"
+          unzip -q "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/gradle-9.6/bin" >> "$GITHUB_PATH"
 
       - name: Install Android SDK 36
         uses: android-actions/setup-android@v3
@@ -51,7 +53,7 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: gradle --no-daemon clean assembleDebug bundleRelease
+        run: gradle --version && gradle --no-daemon clean assembleDebug bundleRelease
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
