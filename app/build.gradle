@@ -1,0 +1,32 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.abdulrhman.xo3d'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.abdulrhman.xo3d'
+        minSdk 23
+        targetSdk 36
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        debug { applicationIdSuffix '.debug' }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            if (System.getenv('KEYSTORE_PATH') != null && System.getenv('KEYSTORE_PASSWORD') != null && System.getenv('KEY_ALIAS') != null && System.getenv('KEY_PASSWORD') != null) {
+                signingConfig signingConfigs.create('ciRelease') {
+                    storeFile file(System.getenv('KEYSTORE_PATH'))
+                    storePassword System.getenv('KEYSTORE_PASSWORD')
+                    keyAlias System.getenv('KEY_ALIAS')
+                    keyPassword System.getenv('KEY_PASSWORD')
+                }
+            }
+        }
+    }
+
+    packaging { resources.excludes += ['/META-INF/{AL2.0,LGPL2.1}'] }
+}
